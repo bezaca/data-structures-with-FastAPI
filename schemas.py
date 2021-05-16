@@ -3,7 +3,6 @@ from pydantic import BaseModel
 from datetime import date
 
 class BlogPostBase(BaseModel):
-    id: int
     title: str
     body: str
     date: date
@@ -17,14 +16,13 @@ class BlogPost(BlogPostBase):
 
 
 class UserBase(BaseModel):
-    id: int
     name: str
     email: str
     address: str
     phone: int
 
-class UserCreate(UserBase):
-    posts: List[BlogPostBase]
+# class UserCreate(UserBase):
+#     posts: List[BlogPostBase]
 
 
 class User(UserBase):

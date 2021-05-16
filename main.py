@@ -3,7 +3,9 @@ from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 
-import crud, models, schemas
+import crud
+import models
+import schemas
 from database import SessionLocal, engine
 
 models.Base.metadata.create_all(bind=engine)
@@ -30,13 +32,6 @@ def create_user(user: schemas.UserBase, db: Session = Depends(get_db)):
     crud.create_user(db=db, user=user)
 
     return JSONResponse(status_code=status.HTTP_201_CREATED, content={'message': 'user created'})
-    """
-    Need to parse the request to JSON,
-    and acces like a dict through key
-
-    Return a json with user created and 200 
-    """
-
 
 @app.get("/user/descending_id")
 def get_all_users_descending():
