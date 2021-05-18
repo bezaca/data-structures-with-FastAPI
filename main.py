@@ -2,6 +2,7 @@
 from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
+from sqlalchemy.sql.functions import user
 
 import crud
 import models
@@ -34,8 +35,10 @@ def create_user(user: schemas.UserBase, db: Session = Depends(get_db)):
     return JSONResponse(status_code=status.HTTP_201_CREATED, content={'message': 'user created'})
 
 @app.get("/user/descending_id")
-def get_all_users_descending():
-    ...
+def get_all_users_descending(db: Session = Depends(get_db)):
+    
+    users = crud.get_users_descending()
+    users.print_list()
 
 
 @app.get("/user/descending_id")
