@@ -1,4 +1,3 @@
-
 class Node:
     def __init__(self, data):
         self.data = data
@@ -10,6 +9,9 @@ class LinkedList:
         self.head = None
 
     def print_list(self) -> str:
+        """
+        Print the list information
+        """
         ll_string = ""
         current_node = self.head
         while current_node:
@@ -39,3 +41,27 @@ class LinkedList:
 
         new_node.next = self.head
         self.head = new_node
+
+    def to_list(self):
+        """
+        Return a list with linked list nodes
+        """
+        arr = []
+        if self.head:
+            current_node = self.head
+            while current_node:
+                arr.append(current_node.data)
+                current_node = current_node.next
+        return arr
+
+    def get_user_by_id(self, user_id):
+        """
+        Find a user by id 
+        """
+        current_node = self.head
+        while current_node:
+            if current_node.data['id'] is user_id:
+                return current_node.data
+            current_node = current_node.next
+        return None 
+

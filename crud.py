@@ -1,14 +1,27 @@
 from sqlalchemy.orm import Session
 
-
-import models
+from models import User, BlogPost
 import schemas
-import linked_list
+from linked_list import LinkedList
 
 
-def create_user(db: Session, user: schemas.UserBase):
+def create_blogpost(db: Session, blogpost: schemas.BlogPostCreate, user_id: int):
 
-    db_user = models.User(
+    db_blogpost = BlogPost(
+        title=blogpost.title,
+        body=blogpost.body,
+        date=blogpost.date,
+        user_id=user_id,
+    )
+    db.add(db_blogpost)
+    db.commit()
+    db.refresh(db_blogpost)
+    return db_blogpost
+
+
+def create_user(db: Session, user: schemas.UserCreate):
+
+    db_user = User(
         name=user.name,
         email=user.email,
         address=user.address,
@@ -21,13 +34,13 @@ def create_user(db: Session, user: schemas.UserBase):
 
 
 def get_user_by_email(db: Session, email: str):
-    return db.query(models.User).filter(models.User.email == email).first()
+    return db.query(User).filter(User.email == email).first()
 
 
 def get_users_descending(db: Session, skip: int = 0):
 
-    users = db.query(models.User).offset(skip).all()
-    users_linkedlist = linked_list.LinkedList()
+    users = db.query(User).offset(skip).all()
+    users_linkedlist = LinkedList()
 
     for user in users:
         users_linkedlist.prepend({
@@ -38,4 +51,48 @@ def get_users_descending(db: Session, skip: int = 0):
             "phone": user.phone,
         })
 
-    return users_linkedlist
+    return users_linkedlist.to_list()
+
+def get_users_ascending(db: Session, skip: int = 0):
+
+    users = db.query(User).offset(skip).all()
+    users_linkedlist = LinkedList()
+
+    for user in users:
+        users_linkedlist.append({
+            "id": user.id,
+            "name": user.name,
+            "email": user.email,
+            "address": user.address,
+            "phone": user.phone,
+        })
+
+    return users_linkedlist.to_list()
+
+def get_user_by_id(db: Session, user_id: int):
+
+    users = db.query(User).all()
+    users_linkedlist = LinkedList()
+    
+    for user in users:
+        users_linkedlist.append({
+            "id": user.id,
+            "name": user.name,
+            "email": user.email,
+            "address": user.address,
+            "phone": user.phone,
+        })
+
+    find_user = users_linkedlist.get_user_by_id(user_id)
+
+    return find_user 
+
+def delete_user(db: Session, user_id: int):
+
+    db_user = db.query(User).filter(User.user_id).first()
+     
+    db.delete(db_user)
+    db.commit()
+
+    return db_user
+

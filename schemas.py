@@ -1,15 +1,18 @@
-from typing import List
 from pydantic import BaseModel
 from datetime import date
+
 
 class BlogPostBase(BaseModel):
     title: str
     body: str
     date: date
+
+
+class BlogPostCreate(BaseModel):
     user_id: int
 
- 
-class BlogPost(BlogPostBase):
+
+class BlogPost(BlogPostCreate):
 
     class Config:
         orm_mode = True
@@ -21,8 +24,9 @@ class UserBase(BaseModel):
     address: str
     phone: int
 
-# class UserCreate(UserBase):
-#     posts: List[BlogPostBase]
+
+class UserCreate(UserBase):
+    pass
 
 
 class User(UserBase):
